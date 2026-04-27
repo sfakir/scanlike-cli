@@ -4,7 +4,12 @@ import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { PDFDocument } from 'pdf-lib'
-import { scanPdfToPdf, scanPdfToImages, defaultConfig } from '../dist/index.js'
+import {
+  scanPdfToPdf,
+  scanPdfToImages,
+  defaultConfig,
+  type ScannedImage,
+} from '../dist/index.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const FIXTURE = join(__dirname, 'fixtures', 'sample.pdf')
@@ -24,7 +29,7 @@ test('scanPdfToPdf returns a valid single-page PDF for sample.pdf', async () => 
 
 test('scanPdfToPdf reports progress for every rendered page', async () => {
   const data = await loadFixture()
-  const seen = []
+  const seen: Array<[number, number]> = []
   await scanPdfToPdf(data, {
     onProgress: (done, total) => seen.push([done, total]),
   })
@@ -34,29 +39,29 @@ test('scanPdfToPdf reports progress for every rendered page', async () => {
 
 test('scanPdfToImages yields per-page JPEG buffers by default', async () => {
   const data = await loadFixture()
-  const pages = []
+  const pages: ScannedImage[] = []
   for await (const p of scanPdfToImages(data)) {
     pages.push(p)
   }
   assert.equal(pages.length, 1)
-  assert.equal(pages[0].pageNumber, 1)
-  assert.equal(pages[0].format, 'image/jpeg')
-  assert.equal(pages[0].buffer[0], 0xff)
-  assert.equal(pages[0].buffer[1], 0xd8)
+  assert.equal(pages[0]!.pageNumber, 1)
+  assert.equal(pages[0]!.format, 'image/jpeg')
+  assert.equal(pages[0]!.buffer[0], 0xff)
+  assert.equal(pages[0]!.buffer[1], 0xd8)
 })
 
 test('scanPdfToImages with --format png yields PNG buffers', async () => {
   const data = await loadFixture()
-  const pages = []
+  const pages: ScannedImage[] = []
   for await (const p of scanPdfToImages(data, {
     config: { output_format: 'image/png' },
   })) {
     pages.push(p)
   }
   assert.equal(pages.length, 1)
-  assert.equal(pages[0].format, 'image/png')
-  assert.equal(pages[0].buffer[0], 0x89)
-  assert.equal(pages[0].buffer[1], 0x50)
+  assert.equal(pages[0]!.format, 'image/png')
+  assert.equal(pages[0]!.buffer[0], 0x89)
+  assert.equal(pages[0]!.buffer[1], 0x50)
 })
 
 test('config overrides merge into defaults', async () => {
@@ -78,7 +83,7 @@ test('throws on out-of-range page request', async () => {
 
 test('respects --pages subset', async () => {
   const data = await loadFixture()
-  const pages = []
+  const pages: number[] = []
   for await (const p of scanPdfToImages(data, { pages: [1] })) {
     pages.push(p.pageNumber)
   }

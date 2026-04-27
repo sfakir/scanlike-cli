@@ -4,7 +4,7 @@ import { PDFDocument } from 'pdf-lib'
 import { createCanvas } from '@napi-rs/canvas'
 import { buildPdf } from '../dist/pdf-builder.js'
 
-function pageImage(format = 'image/jpeg') {
+function pageImage(format: 'image/png' | 'image/jpeg' = 'image/jpeg') {
   const c = createCanvas(800, 1000)
   const ctx = c.getContext('2d')
   ctx.fillStyle = 'white'

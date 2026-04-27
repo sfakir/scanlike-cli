@@ -1,5 +1,11 @@
 # scanlike
 
+[![npm](https://img.shields.io/npm/v/scanlike?color=cb3837&logo=npm)](https://www.npmjs.com/package/scanlike)
+[![license](https://img.shields.io/npm/l/scanlike)](./LICENSE)
+[![node](https://img.shields.io/node/v/scanlike)](https://nodejs.org)
+
+📦 **npm:** https://www.npmjs.com/package/scanlike
+
 Make PDFs look like they were printed and scanned. Inspired by [lookscanned.io](https://lookscanned.io), but rebuilt as a Node-native CLI **and** an MCP server you can hand to Claude or any other agent. No browser, no headless Chromium, no print dialog.
 
 ```sh

@@ -40,8 +40,9 @@
     "dev": "tsc --watch",
     "start": "node dist/cli.js",
     "scan": "node dist/cli.js",
-    "test": "pnpm build && node --test --enable-source-maps test/*.test.js",
-    "test:watch": "node --test --watch test/*.test.js",
+    "test": "pnpm build && pnpm test:typecheck && node --import tsx --test --enable-source-maps test/*.test.ts",
+    "test:typecheck": "tsc --noEmit -p tsconfig.test.json",
+    "test:watch": "node --import tsx --test --watch test/*.test.ts",
     "prepublishOnly": "pnpm test"
   },
   "dependencies": {
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.4",
+    "tsx": "^4.21.0",
     "typescript": "~5.3.3"
   }
 }

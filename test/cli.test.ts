@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { spawn } from 'node:child_process'
+import { spawn, type SpawnOptions } from 'node:child_process'
 import { mkdtemp, readFile, readdir, stat } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
@@ -11,13 +11,19 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const CLI = join(__dirname, '..', 'dist', 'cli.js')
 const FIXTURE = join(__dirname, 'fixtures', 'sample.pdf')
 
-function run(args, opts = {}) {
+interface RunResult {
+  code: number | null
+  stdout: string
+  stderr: string
+}
+
+function run(args: string[], opts: SpawnOptions = {}): Promise<RunResult> {
   return new Promise((resolve) => {
     const child = spawn('node', [CLI, ...args], { stdio: 'pipe', ...opts })
     let stdout = ''
     let stderr = ''
-    child.stdout.on('data', (b) => (stdout += b.toString()))
-    child.stderr.on('data', (b) => (stderr += b.toString()))
+    child.stdout!.on('data', (b: Buffer) => (stdout += b.toString()))
+    child.stderr!.on('data', (b: Buffer) => (stderr += b.toString()))
     child.on('close', (code) => resolve({ code, stdout, stderr }))
   })
 }
@@ -69,7 +75,7 @@ test('writes per-page PNGs to a directory when -o ends in .png', async () => {
   assert.equal(r.code, 0)
   const files = (await readdir(dir)).filter((f) => f.endsWith('.png'))
   assert.equal(files.length, 1)
-  const buf = await readFile(join(dir, files[0]))
+  const buf = await readFile(join(dir, files[0]!))
   assert.equal(buf[0], 0x89)
   assert.equal(buf[1], 0x50)
 })
