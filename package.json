@@ -1,0 +1,58 @@
+{
+  "name": "scanlike",
+  "version": "0.1.0",
+  "description": "Make PDFs look like they were printed and scanned. CLI + MCP server, Node-native, no browser required.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Simon Fakir <simon@fakir-it.de> (https://www.fakir.tech)",
+  "homepage": "https://www.fakir.tech",
+  "keywords": [
+    "pdf",
+    "scan",
+    "scanner",
+    "lookscanned",
+    "cli",
+    "mcp",
+    "image-processing"
+  ],
+  "bin": {
+    "scanlike": "./dist/cli.js",
+    "scanlike-mcp": "./dist/mcp.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "build": "tsc && chmod +x dist/cli.js dist/mcp.js",
+    "dev": "tsc --watch",
+    "start": "node dist/cli.js",
+    "scan": "node dist/cli.js",
+    "test": "pnpm build && node --test --enable-source-maps test/*.test.js",
+    "test:watch": "node --test --watch test/*.test.js",
+    "prepublishOnly": "pnpm test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@napi-rs/canvas": "^0.1.55",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.0.379",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "typescript": "~5.3.3"
+  }
+}
